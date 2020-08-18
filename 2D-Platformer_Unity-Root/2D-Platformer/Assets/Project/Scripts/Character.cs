@@ -22,35 +22,29 @@ namespace KyleConibear
         public enum State
         {
             Idle = 0,
-            Walking = 1,
-            Running = 2,
-            Jumping = 3
+            Moving = 1,
+            Jumping = 2,
+            Falling = 3
         }
-
-        protected bool isRunning = false;
 
         [Header("Movement Tuning")]
 
         [Tooltip("The amount of velocity applied along the x axis when moving.")]
-        [Range(4.1f,6)]
-        [SerializeField] private float baseMovementSpeed = 1.0f;
-
-        [Tooltip("The amount the \"baseMovementSpeed\" is multiplied by when running.")]
-        [Range(1.1f, 3)]
-        [SerializeField] private float runningMultiplier = 2.0f;
+        [Range(4.1f, 6)]
+        [SerializeField] protected float baseMovementSpeed = 1.0f;
 
         [Tooltip("The amount the character will slide after movement has stopped.")]
         // slideAmount must be less than baseMovementSpeed
-        [Range(1,4)]
+        [Range(1, 4)]
         [SerializeField] private float slideAmount = 2.0f;
 
         [Tooltip("The amount of velocity applied to the y axis when performing a base jump.")]
         [Range(3, 12)]
-        [SerializeField] private float jumpHeight = 6.0f;
+        [SerializeField] protected float jumpHeight = 6.0f;
 
-        [Tooltip("The amount the \"jumpHeight\" is multiplied by when a running.")]
-        [Range(1.1f, 2)]
-        [SerializeField] private float jumpMultiplier = 1.25f;
+        [Tooltip("The amount gravity is multiplied by when falling.")]
+        [Range(1, 2)]
+        [SerializeField] private float fallMultiplier = 1.5f;
 
         [Header("Ground Check")]
 
@@ -64,59 +58,69 @@ namespace KyleConibear
         [Header("Components")]
 
         [SerializeField] private SpriteRenderer sprite = null;
-        [SerializeField] private Animator animator = null;
-        [SerializeField] private Rigidbody2D rigidbody2D = null;
+        [SerializeField] protected Animator animator = null;
+        [SerializeField] protected Rigidbody2D rigidbody2D = null;
         [SerializeField] private BoxCollider2D boxCollider2D = null;
 
         #region MonoBehaviour Methods
         private void LateUpdate()
-        {            
-            this.StateController();            
+        {
+            this.StateController();
+            this.FasterFall();
         }
         #endregion
 
         #region Class Methods
-        protected void Move(float direction)
+        protected virtual float CurrentMovementSpeed()
         {
-            float x;
+            return this.baseMovementSpeed;
+        }
 
-            if (isRunning)
+        protected void Move(float xAxisDirection)
+        {
+            float x = 0;
+
+            if (xAxisDirection > Mathf.Epsilon)
             {
-                x = direction * (baseMovementSpeed * runningMultiplier);
+                x = CurrentMovementSpeed();
             }
-            else
+            else if (xAxisDirection < Mathf.Epsilon)
             {
-                x = direction * baseMovementSpeed;
+                x = -CurrentMovementSpeed();
             }
 
-            if (x < 0)
+            if (xAxisDirection < 0)
             {
                 this.sprite.flipX = true;
             }
-            else if (x > 0)
+            else if (xAxisDirection > 0)
             {
                 this.sprite.flipX = false;
             }
 
-            Log(this.isLogging, Type.Message, $"Player {this.name} is moving, x = {x}");
+            Log(this.isLogging, Type.Message, $"Player {this.name} is moving, x = {xAxisDirection}");
             this.rigidbody2D.velocity = new Vector2(x, this.rigidbody2D.velocity.y);
         }
+
         protected void Jump()
         {
-            if (this.IsGrounded())
+            if (this.isGrounded)
             {
                 Log(this.isLogging, Type.Message, $"Character {this.name} jumped.");
-
-                float height = this.jumpHeight;
-
-                if (this.isRunning)
-                {
-                    height = this.jumpHeight * this.jumpMultiplier;
-                }
-
-                this.rigidbody2D.velocity = new Vector2(this.rigidbody2D.velocity.x, height);
+                this.rigidbody2D.velocity += Vector2.up * this.jumpHeight;
             }
         }
+
+        protected virtual void FasterFall()
+        {
+            // Check if character is falling
+            if (this.rigidbody2D.velocity.y < Mathf.Epsilon)
+            {
+                Log(this.isLogging, Type.Message, "Character is falling.");
+                this.rigidbody2D.velocity += Vector2.up * Physics2D.gravity.y * this.fallMultiplier * Time.deltaTime;
+            }
+        }
+
         private bool IsGrounded()
         {
             bool isGrounded = false;
@@ -153,22 +157,21 @@ namespace KyleConibear
             // Check if character is falling or jumping
             if (this.isGrounded == false)
             {
-                this.state = State.Jumping;
+                if(this.rigidbody2D.velocity.y > Mathf.Epsilon)
+                {
+                    this.state = State.Jumping;
+                }
+                else
+                {
+                    this.state = State.Falling;
+                }
             }
 
             // Check if the character is moving
             // Mathf.Abs: Returns an absolute value converting a negative number into a positive.
             else if (Mathf.Abs(this.rigidbody2D.velocity.x) > this.slideAmount)
             {
-                // Character is walking
-                if (Mathf.Abs(this.rigidbody2D.velocity.x) <= this.baseMovementSpeed)
-                {
-                    this.state = State.Walking;
-                }
-                else // Character is running
-                {
-                    this.state = State.Running;
-                }
+                this.state = State.Moving;
             }
             // Character is idle
             else

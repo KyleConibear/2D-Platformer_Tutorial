@@ -15,7 +15,7 @@ namespace KyleConibear
             Error = 2
         }
 
-        public static void Log(bool isLogging, Type messageType = Type.Message, string message = "Method has executed.", bool isSinglePrint = false)
+        public static void Log(bool isLogging, Type messageType = Type.Message, string message = "Method has executed.", bool isSinglePrint = true)
         {
             if (isLogging == false && messageType != Type.Error)
                 return;
@@ -23,7 +23,7 @@ namespace KyleConibear
             Log(messageType, message, isSinglePrint);
         }
 
-            public static void Log(Type messageType = Type.Message, string message = "Method has executed.", bool isSinglePrint = false)
+        public static void Log(Type messageType = Type.Message, string message = "Method has executed.", bool isSinglePrint = true)
         {
             StackFrame frame = new StackFrame(1);
 

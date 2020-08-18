@@ -18,7 +18,11 @@ namespace KyleConibear
 
         private void Update()
         {
-            base.isRunning = this.playerInput.IsRunning;
+            if(base.isGrounded)
+            {
+                base.isRunning = this.playerInput.IsRunning;
+            }
+            
             base.Move(this.playerInput.MoveDirection.x);
         }
         #endregion

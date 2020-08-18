@@ -52770,6 +52770,11 @@ PrefabInstance:
       propertyPath: groundCheckDepth
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 2074415285887389472, guid: 8910e718e89449e439d967f1d472bac2,
+        type: 3}
+      propertyPath: jumpHeight
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3078394490183437833, guid: 8910e718e89449e439d967f1d472bac2,
         type: 3}
       propertyPath: isLogging

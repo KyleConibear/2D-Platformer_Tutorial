@@ -8,4 +8,6 @@
 	-> Animate
 		-> Idle
 		-> Run
+		-> Jump
+			-> Ground check
 		

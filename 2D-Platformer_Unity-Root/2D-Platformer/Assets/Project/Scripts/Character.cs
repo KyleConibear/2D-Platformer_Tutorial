@@ -18,19 +18,34 @@ namespace KyleConibear
     {
         public bool isLogging = false;
 
+        [SerializeField] protected State state = State.Idle;
+        public enum State
+        {
+            Idle = 0,
+            Walking = 1,
+            Running = 2,
+            Jumping = 3
+        }
+
         protected bool isRunning = false;
 
         [Header("Movement Tuning")]
 
         [Tooltip("The amount of velocity applied along the x axis when moving.")]
+        [Range(4.1f,6)]
         [SerializeField] private float baseMovementSpeed = 1.0f;
 
         [Tooltip("The amount the \"baseMovementSpeed\" is multiplied by when running.")]
         [Range(1.1f, 3)]
         [SerializeField] private float runningMultiplier = 2.0f;
 
+        [Tooltip("The amount the character will slide after movement has stopped.")]
+        // slideAmount must be less than baseMovementSpeed
+        [Range(1,4)]
+        [SerializeField] private float slideAmount = 2.0f;
+
         [Tooltip("The amount of velocity applied to the y axis when performing a base jump.")]
-        [Range(3,12)]
+        [Range(3, 12)]
         [SerializeField] private float jumpHeight = 6.0f;
 
         [Tooltip("The amount the \"jumpHeight\" is multiplied by when a running.")]
@@ -41,7 +56,7 @@ namespace KyleConibear
 
         protected bool isGrounded = false;
 
-        [Range(0.1f,1)]
+        [Range(0.1f, 1)]
         [SerializeField] private float groundCheckDepth = 0.5f;
 
         [SerializeField] private LayerMask groundLayerMask;
@@ -55,12 +70,8 @@ namespace KyleConibear
 
         #region MonoBehaviour Methods
         private void LateUpdate()
-        {
-            this.animator.SetBool("isMoving", this.rigidbody2D.velocity.x != 0);
-            this.animator.SetBool("isRunning", this.isRunning);
-
-            this.isGrounded = this.IsGrounded();
-            this.animator.SetBool("isGrounded", isGrounded);
+        {            
+            this.StateController();            
         }
         #endregion
 
@@ -92,7 +103,7 @@ namespace KyleConibear
         }
         protected void Jump()
         {
-            if(this.IsGrounded())
+            if (this.IsGrounded())
             {
                 Log(this.isLogging, Type.Message, $"Character {this.name} jumped.");
 
@@ -104,7 +115,7 @@ namespace KyleConibear
                 }
 
                 this.rigidbody2D.velocity = new Vector2(this.rigidbody2D.velocity.x, height);
-            }            
+            }
         }
         private bool IsGrounded()
         {
@@ -132,6 +143,40 @@ namespace KyleConibear
             Log(this.isLogging, Type.Message, $"Character {this.name} is grounded = {isGrounded}");
 
             return isGrounded;
+        }
+
+        private void StateController()
+        {
+            // Cache our ground check for use outside the class
+            this.isGrounded = this.IsGrounded();
+
+            // Check if character is falling or jumping
+            if (this.isGrounded == false)
+            {
+                this.state = State.Jumping;
+            }
+
+            // Check if the character is moving
+            // Mathf.Abs: Returns an absolute value converting a negative number into a positive.
+            else if (Mathf.Abs(this.rigidbody2D.velocity.x) > this.slideAmount)
+            {
+                // Character is walking
+                if (Mathf.Abs(this.rigidbody2D.velocity.x) <= this.baseMovementSpeed)
+                {
+                    this.state = State.Walking;
+                }
+                else // Character is running
+                {
+                    this.state = State.Running;
+                }
+            }
+            // Character is idle
+            else
+            {
+                this.state = State.Idle;
+            }
+
+            this.animator.SetInteger("state", (int)this.state);
         }
         #endregion
     }

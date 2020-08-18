@@ -10,4 +10,12 @@
 		-> Run
 		-> Jump
 			-> Ground check
+* Cinemachine
+	-> Import from package manager
+	-> Create 2D Camera
+		-> Set "Follow" to player
+	-> Adjust Body
+	-> Add Extension
+		-> Cinemachine Confiner
+			-> Add Polygon Collider 2D to scene and set bounds
 		

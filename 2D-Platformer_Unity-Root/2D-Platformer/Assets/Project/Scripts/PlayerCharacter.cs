@@ -13,6 +13,7 @@ namespace KyleConibear
         private void Awake()
         {
             this.playerInput = this.GetComponent<InputHandler>();
+            this.playerInput.OnJump.AddListener(base.Jump);
         }
 
         private void Update()

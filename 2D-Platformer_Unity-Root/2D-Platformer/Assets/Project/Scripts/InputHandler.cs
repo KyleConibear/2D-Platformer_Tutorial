@@ -14,6 +14,8 @@ namespace KyleConibear
 
         private bool isRunning = false;
         public bool IsRunning => this.isRunning;
+
+        public UnityEvent OnJump = new UnityEvent();
         #endregion
 
         #region Methods       
@@ -27,19 +29,26 @@ namespace KyleConibear
 
             this.moveDirection = context.ReadValue<Vector2>();
         }
-
         public void Running(InputAction.CallbackContext context)
-        {           
+        {
             if (context.started)
             {
                 Logger.Log(this.isLogging, Logger.Type.Message, $"Running Input-context.started.");
                 this.isRunning = true;
             }
-            else if(context.canceled)
+            else if (context.canceled)
             {
                 Logger.Log(this.isLogging, Logger.Type.Message, $"Running Input-context.canceled.");
                 this.isRunning = false;
-            }            
+            }
+        }
+        public void Jump(InputAction.CallbackContext context)
+        {
+            if (context.started)
+            {
+                Logger.Log(this.isLogging, Logger.Type.Message, $"Jump Input received.");
+                this.OnJump.Invoke();
+            }
         }
         #endregion
     }

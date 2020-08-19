@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace KyleConibear
 {
-    public class CherryPickUp : PickUp2D
+    public class GemPickUp : PickUp2D
     {
         protected override void PickedUp(PlayerCharacter player)
         {
-            GameManager.level.IncrementCherryCount();
+            GameManager.level.IncrementGemCount();
         }
     }
 }

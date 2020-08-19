@@ -23,8 +23,11 @@ namespace KyleConibear
         {
             Idle = 0,
             Moving = 1,
-            Jumping = 2,
-            Falling = 3
+            Jumping = 2,            
+            Falling = 3,
+            Crouching = 4,
+            Climbing = 5,
+            Hurt = 6
         }
 
         [Header("Movement Tuning")]

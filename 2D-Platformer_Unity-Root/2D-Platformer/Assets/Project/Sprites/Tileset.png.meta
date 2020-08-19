@@ -154,22 +154,22 @@ TextureImporter:
     second: tileset_49
   - first:
       213: 3885819281616729284
-    second: tileset_50
+    second: Brick-TopLeft
   - first:
       213: 9192141375248400463
-    second: tileset_51
+    second: Brick-TopCenter
   - first:
       213: 293392773991598977
-    second: tileset_52
+    second: Brick-TopRight
   - first:
       213: -1978880106863730396
-    second: tileset_53
+    second: Brick-Left
   - first:
       213: 2815510966112240897
-    second: tileset_54
+    second: Brick-Center
   - first:
       213: 3461855256792236426
-    second: tileset_55
+    second: Brick-Right
   - first:
       213: -4909924010071155561
     second: tileset_56
@@ -199,13 +199,13 @@ TextureImporter:
     second: tileset_64
   - first:
       213: 6418657867545673408
-    second: tileset_65
+    second: Brick-BottomLeft
   - first:
       213: 6264988462522759893
-    second: tileset_66
+    second: Brick-BottomCenter
   - first:
       213: 2204049225861295520
-    second: tileset_67
+    second: Brick-BottomRight
   - first:
       213: -4605163527387846987
     second: tileset_68
@@ -1532,7 +1532,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tileset_50
+      name: Brick-TopLeft
       rect:
         serializedVersion: 2
         x: 240
@@ -1553,7 +1553,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tileset_51
+      name: Brick-TopCenter
       rect:
         serializedVersion: 2
         x: 272
@@ -1574,7 +1574,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tileset_52
+      name: Brick-TopRight
       rect:
         serializedVersion: 2
         x: 304
@@ -1595,10 +1595,10 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tileset_53
+      name: Brick-Left
       rect:
         serializedVersion: 2
-        x: 240
+        x: 239
         y: 208
         width: 16
         height: 16
@@ -1616,7 +1616,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tileset_54
+      name: Brick-Center
       rect:
         serializedVersion: 2
         x: 272
@@ -1637,7 +1637,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tileset_55
+      name: Brick-Right
       rect:
         serializedVersion: 2
         x: 304
@@ -1847,7 +1847,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tileset_65
+      name: Brick-BottomLeft
       rect:
         serializedVersion: 2
         x: 240
@@ -1868,7 +1868,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tileset_66
+      name: Brick-BottomCenter
       rect:
         serializedVersion: 2
         x: 272
@@ -1889,7 +1889,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tileset_67
+      name: Brick-BottomRight
       rect:
         serializedVersion: 2
         x: 304

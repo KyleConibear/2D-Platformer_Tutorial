@@ -47,9 +47,12 @@ TagManager:
   - name: Midground
     uniqueID: 3472067335
     locked: 0
-  - name: Ground/Entity
+  - name: Entity
     uniqueID: 1777805509
     locked: 0
   - name: Foreground
     uniqueID: 2250071337
+    locked: 0
+  - name: LevelUserInterface
+    uniqueID: 3276804337
     locked: 0

@@ -38,17 +38,20 @@ namespace KyleConibear
             }
         }
 
+        private int time = 300;
         private int gemCount = 0;        
         private int cherryCount = 0;
 
-
+        public void IncreaseTime(int amount)
+        {
+            this.time += amount;
+        }
         public void IncrementGemCount()
         {
             gemCount++;
             Logger.Log(this.isLogging, Type.Message, $"gemCount: {gemCount}");
             this.LevelUI.UpdateGemCounter(gemCount);
         }
-
         public void IncrementCherryCount()
         {
             cherryCount++;

@@ -10,7 +10,7 @@ namespace KyleConibear
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
-
+    [RequireComponent(typeof(InputHandler))]
     /// <summary>
     /// Responsible for moving and animating the character entity.
     /// </summary>
@@ -18,12 +18,12 @@ namespace KyleConibear
     {
         public bool isLogging = false;
 
-        [SerializeField] protected State state = State.Idle;
+        [SerializeField] private State state = State.Idle;
         public enum State
         {
             Idle = 0,
             Moving = 1,
-            Jumping = 2,            
+            Jumping = 2,
             Falling = 3,
             Crouching = 4,
             Climbing = 5,
@@ -33,24 +33,31 @@ namespace KyleConibear
         [Header("Movement Tuning")]
 
         [Tooltip("The amount of velocity applied along the x axis when moving.")]
-        [Range(4.1f, 6)]
-        [SerializeField] protected float baseMovementSpeed = 1.0f;
+        [Range(3.1f, 6)]
+        [SerializeField] private float baseMovementSpeed = 5.0f;
+
+        [Tooltip("The amount the \"baseMovementSpeed\" is multiplied by when running.")]
+        [Range(1.1f, 3)]
+        [SerializeField] private float runningMultiplier = 1.5f;
 
         [Tooltip("The amount the character will slide after movement has stopped.")]
         // slideAmount must be less than baseMovementSpeed
-        [Range(1, 4)]
-        [SerializeField] private float slideAmount = 2.0f;
+        [Range(1, 3)]
+        [SerializeField] private float slideAmount = 3.0f;
 
         [Tooltip("The amount of velocity applied to the y axis when performing a base jump.")]
-        [Range(3, 12)]
-        [SerializeField] protected float jumpHeight = 6.0f;
+        [Range(6, 12)]
+        [SerializeField] protected float jumpHeight = 12.0f;
 
         [Tooltip("The amount gravity is multiplied by when falling.")]
+        [Range(1, 3)]
+        [SerializeField] private float fallMultiplier = 2.0f;
+
+        [Tooltip("If the player releases the jump button before the jumps peak height gravity will be multiplied to quicken descent.")]
         [Range(1, 2)]
-        [SerializeField] private float fallMultiplier = 1.5f;
+        [SerializeField] private float lowJumpGravityMultiplier = 1.5f;
 
         [Header("Ground Check")]
-
         protected bool isGrounded = false;
 
         [Range(0.1f, 1)]
@@ -59,27 +66,82 @@ namespace KyleConibear
         [SerializeField] private LayerMask groundLayerMask;
 
         [Header("Components")]
-
-        [SerializeField] private SpriteRenderer sprite = null;
-        [SerializeField] protected Animator animator = null;
-        [SerializeField] protected Rigidbody2D rigidbody2D = null;
-        [SerializeField] private BoxCollider2D boxCollider2D = null;
+        private InputHandler playerInput = null;
+        private SpriteRenderer sprite = null;
+        private Animator animator = null;
+        private Rigidbody2D rigidbody2D = null;
+        private BoxCollider2D boxCollider2D = null;
 
         #region MonoBehaviour Methods
+        private void Awake()
+        {
+            this.playerInput = this.GetComponent<InputHandler>();
+            this.playerInput.OnJump.AddListener(this.Jump);
+
+            this.sprite = this.GetComponent<SpriteRenderer>();
+            this.animator = this.GetComponent<Animator>();
+            this.rigidbody2D = this.GetComponent<Rigidbody2D>();
+            this.boxCollider2D = this.GetComponent<BoxCollider2D>();
+        }
+
+        private void Update()
+        {
+            if (this.state == State.Hurt)
+                return;
+
+            this.animator.SetBool("isRunning", this.playerInput.isRunning);
+
+            // Prevents the velocity from being set to zero killing any momentum.
+            // Mathf.Abs: Returns an absolute value converting a negative number into a positive.
+            if (Mathf.Abs(this.playerInput.MoveDirection.x) > Mathf.Epsilon) // Mathf.Epsilon: The smallest value that a float can have different from zero.
+            {
+                this.Move(this.playerInput.MoveDirection.x);
+            }
+        }
+
         private void LateUpdate()
         {
+            if (this.state == State.Hurt)
+                return;
+
             this.StateController();
             this.FasterFall();
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            Enemy enemy = collision.transform.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                this.Jump(true);
+                // If the character is falling kill the enemy
+                if (this.state == State.Falling)
+                {
+                    enemy.Kill();
+                }
+                // Else the character becomes hurt
+                else
+                {
+                    this.state = State.Hurt;
+                }
+            }
         }
         #endregion
 
         #region Class Methods
-        protected virtual float CurrentMovementSpeed()
+        private float CurrentMovementSpeed()
         {
-            return this.baseMovementSpeed;
+            if (this.playerInput.isRunning)
+            {
+                return this.baseMovementSpeed * this.runningMultiplier;
+            }
+            else
+            {
+                return this.baseMovementSpeed;
+            }
         }
 
-        protected void Move(float xAxisDirection)
+        private void Move(float xAxisDirection)
         {
             float x = 0;
 
@@ -105,19 +167,32 @@ namespace KyleConibear
             this.rigidbody2D.velocity = new Vector2(x, this.rigidbody2D.velocity.y);
         }
 
-        protected void Jump()
+        private void Jump()
         {
             if (this.isGrounded)
             {
-                Log(this.isLogging, Type.Message, $"Character {this.name} jumped.");
-                this.rigidbody2D.velocity += Vector2.up * this.jumpHeight;
+                this.Jump(true);
             }
         }
 
-        protected virtual void FasterFall()
+        private void Jump(bool isForced = false)
         {
+            if (this.isGrounded || isForced)
+            {
+                Log(this.isLogging, Type.Message, $"Character {this.name} jumped.");
+                this.rigidbody2D.velocity = new Vector2(this.rigidbody2D.velocity.x, this.jumpHeight);
+            }
+        }
+
+        private void FasterFall()
+        {
+            // We are jumping up
+            if (this.rigidbody2D.velocity.y > Mathf.Epsilon && this.playerInput.isJumping == false)
+            {
+                this.rigidbody2D.velocity += Vector2.up * Physics2D.gravity.y * this.lowJumpGravityMultiplier * Time.deltaTime;
+            }
             // Check if character is falling
-            if (this.rigidbody2D.velocity.y < Mathf.Epsilon)
+            else if (this.rigidbody2D.velocity.y < Mathf.Epsilon)
             {
                 Log(this.isLogging, Type.Message, "Character is falling.");
                 this.rigidbody2D.velocity += Vector2.up * Physics2D.gravity.y * this.fallMultiplier * Time.deltaTime;
@@ -160,7 +235,7 @@ namespace KyleConibear
             // Check if character is falling or jumping
             if (this.isGrounded == false)
             {
-                if(this.rigidbody2D.velocity.y > Mathf.Epsilon)
+                if (this.rigidbody2D.velocity.y > Mathf.Epsilon)
                 {
                     this.state = State.Jumping;
                 }

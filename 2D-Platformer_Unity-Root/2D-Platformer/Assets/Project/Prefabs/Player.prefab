@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8211716364867214489}
-  - component: {fileID: 2074415285887389472}
+  - component: {fileID: 9938326432981708}
   - component: {fileID: 3078394490183437833}
   - component: {fileID: 8211716364374567227}
   - component: {fileID: 8315159812119769574}
@@ -37,7 +37,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2074415285887389472
+--- !u!114 &9938326432981708
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,22 +46,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 8211716364867214502}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 360c25019c208694fa057f8ded0e0752, type: 3}
+  m_Script: {fileID: 11500000, guid: ccc7ba491b43248499d4ad96632781f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLogging: 1
-  baseMovementSpeed: 3
-  runningMultiplier: 2
+  isLogging: 0
+  state: 0
+  baseMovementSpeed: 1
+  slideAmount: 2
   jumpHeight: 6
-  jumpMultiplier: 1.25
+  fallMultiplier: 1.5
   groundCheckDepth: 0.5
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 256
-  sprite: {fileID: 8315159812119769574}
-  animator: {fileID: 2400581251899286663}
-  rigidbody2D: {fileID: 1079894480399968223}
-  boxCollider2D: {fileID: 8211716364374567234}
+  sprite: {fileID: 0}
+  animator: {fileID: 0}
+  rigidbody2D: {fileID: 0}
+  boxCollider2D: {fileID: 0}
 --- !u!114 &3078394490183437833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,7 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c61e4aac1fe684e4aa13dec01a0a7420, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLogging: 0
+  isLogging: 1
   OnJump:
     m_PersistentCalls:
       m_Calls: []
@@ -287,8 +288,8 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_GravityScale: 2
+  m_Material: {fileID: 6200000, guid: 33559860bd3fc3b4db5906ebda40b352, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -306,7 +307,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.09375, y: -0.28125}
+  m_Offset: {x: 0, y: -0.45}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.575, y: 0.6956522}
@@ -317,5 +318,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.25, y: 1.4375}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0

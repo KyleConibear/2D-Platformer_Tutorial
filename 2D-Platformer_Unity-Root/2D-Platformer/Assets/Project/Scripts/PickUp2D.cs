@@ -8,13 +8,13 @@ namespace KyleConibear
     public abstract class PickUp2D : MonoBehaviour
     {
         protected int quantity = 1;
-        protected abstract void PickedUp(PlayerCharacter player);
+        protected abstract void PickedUp();
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            PlayerCharacter player = collision.GetComponent<PlayerCharacter>();
+            Character player = collision.GetComponent<Character>();
             if (player != null)
             {
-                this.PickedUp(player);
+                this.PickedUp();
                 this.gameObject.SetActive(false);
             }
         }

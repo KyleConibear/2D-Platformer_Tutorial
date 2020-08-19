@@ -6,7 +6,7 @@ namespace KyleConibear
 {
     public class CherryPickUp : PickUp2D
     {
-        protected override void PickedUp(PlayerCharacter player)
+        protected override void PickedUp()
         {
             GameManager.level.IncrementCherryCount();
         }

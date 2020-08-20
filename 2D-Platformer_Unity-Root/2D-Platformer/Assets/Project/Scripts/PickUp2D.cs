@@ -12,7 +12,7 @@ namespace KyleConibear
         private void OnTriggerEnter2D(Collider2D collision)
         {
             Player player = collision.GetComponent<Player>();
-            if (player != null)
+            if (player != null && player.state != Player.State.Hurt)
             {
                 this.PickedUp();
                 this.gameObject.SetActive(false);

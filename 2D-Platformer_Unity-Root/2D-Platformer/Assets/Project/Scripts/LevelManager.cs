@@ -41,6 +41,8 @@ namespace KyleConibear
         [SerializeField] private Animator characterAnimator = null;
         [SerializeField] private Player player = null;
 
+        [SerializeField] private Collider2D playAreaCollider = null;
+
         private int time = 300;
         private int gemCount = 0;
         private int cherryCount = 0;
@@ -48,6 +50,17 @@ namespace KyleConibear
         public void SetPlayerActive()
         {
             this.player.gameObject.SetActive(true);
+        }
+
+        private void PlayerHurt()
+        {
+            StartCoroutine(PlayerHurtDelay());
+        }
+
+        private IEnumerator PlayerHurtDelay()
+        {
+            yield return new WaitForSeconds(3);
+            SceneManager.LoadScene(0);
         }
 
         public void IncreaseTime(int amount)
@@ -72,7 +85,15 @@ namespace KyleConibear
             yield return new WaitForSeconds(1);
             this.time--;
             LevelUI.UpdateTimeCounter(this.time);
-            StartCoroutine(DecrementTime());
+            if (player.state != Player.State.Hurt)
+            {
+                StartCoroutine(DecrementTime());
+            }
+        }
+
+        public bool IsTargetWithinPlayArea(Vector3 target)
+        {
+            return this.playAreaCollider.bounds.Contains(target);
         }
 
         private void Start()
@@ -86,10 +107,17 @@ namespace KyleConibear
                 Logger.Log(this.isLogging, Type.Warning, $"On_LevelLoaded Action is null.");
             }
 
+            Player.OnPlayerHurt += this.PlayerHurt;
+
             this.characterAnimator.SetInteger("state", SceneManager.GetActiveScene().buildIndex);
 
             //this.characterAnimator.Play("Player-LevelRunIn_Animation");
             StartCoroutine(DecrementTime(3));
+        }
+
+        private void OnDisable()
+        {
+            Player.OnPlayerHurt -= this.PlayerHurt;
         }
     }
 }

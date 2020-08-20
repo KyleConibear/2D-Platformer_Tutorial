@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +19,8 @@ namespace KyleConibear
     {
         public bool isLogging = false;
 
-        [SerializeField] private State state = State.Idle;
+        [SerializeField] private State _state = State.Idle;
+        public State state => this._state;
         public enum State
         {
             Idle = 0,
@@ -29,6 +31,8 @@ namespace KyleConibear
             Climbing = 5,
             Hurt = 6
         }
+
+        public static Action OnPlayerHurt;
 
         [Header("Movement Tuning")]
 
@@ -86,7 +90,7 @@ namespace KyleConibear
 
         private void Update()
         {
-            if (this.state == State.Hurt)
+            if (this._state == State.Hurt)
                 return;
 
             this.animator.SetBool("isRunning", this.playerInput.isRunning);
@@ -101,7 +105,7 @@ namespace KyleConibear
 
         private void LateUpdate()
         {
-            if (this.state == State.Hurt)
+            if (this._state == State.Hurt)
                 return;
 
             this.StateController();
@@ -115,20 +119,33 @@ namespace KyleConibear
             {
                 this.Jump(true);
                 // If the character is falling kill the enemy
-                if (this.state == State.Falling)
+                if (this._state == State.Falling)
                 {
                     enemy.Kill();
                 }
                 // Else the character becomes hurt
                 else
                 {
-                    this.state = State.Hurt;
+                    this.PlayerHurt();
                 }
             }
         }
         #endregion
 
         #region Class Methods
+        private void PlayerHurt(bool disableGameobject = false)
+        {
+            this._state = State.Hurt;
+
+            this.animator.SetInteger("state", (int)this._state);
+
+            OnPlayerHurt.Invoke();
+
+            this.boxCollider2D.enabled = false;
+
+            this.gameObject.SetActive(!disableGameobject);
+        }
+
         private float CurrentMovementSpeed()
         {
             if (this.playerInput.isRunning)
@@ -232,16 +249,22 @@ namespace KyleConibear
             // Cache our ground check for use outside the class
             this.isGrounded = this.IsGrounded();
 
+            if (GameManager.level.IsTargetWithinPlayArea(this.transform.position) == false)
+            {
+                this.PlayerHurt(true);
+                
+            }
+
             // Check if character is falling or jumping
-            if (this.isGrounded == false)
+            else if (this.isGrounded == false)
             {
                 if (this.rigidbody2D.velocity.y > Mathf.Epsilon)
                 {
-                    this.state = State.Jumping;
+                    this._state = State.Jumping;
                 }
                 else
                 {
-                    this.state = State.Falling;
+                    this._state = State.Falling;
                 }
             }
 
@@ -249,15 +272,15 @@ namespace KyleConibear
             // Mathf.Abs: Returns an absolute value converting a negative number into a positive.
             else if (Mathf.Abs(this.rigidbody2D.velocity.x) > this.slideAmount)
             {
-                this.state = State.Moving;
+                this._state = State.Moving;
             }
             // Character is idle
             else
             {
-                this.state = State.Idle;
+                this._state = State.Idle;
             }
 
-            this.animator.SetInteger("state", (int)this.state);
+            this.animator.SetInteger("state", (int)this._state);
         }
         #endregion
     }

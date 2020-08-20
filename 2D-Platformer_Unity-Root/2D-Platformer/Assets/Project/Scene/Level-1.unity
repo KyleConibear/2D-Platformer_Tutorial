@@ -1352,7 +1352,7 @@ PrefabInstance:
     - target: {fileID: 7346516516804965892, guid: 61e2dbdaceef741489e63d79f0ad11ec,
         type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7346516516804965892, guid: 61e2dbdaceef741489e63d79f0ad11ec,
         type: 3}
@@ -1373,6 +1373,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 7346516516804965947, guid: 61e2dbdaceef741489e63d79f0ad11ec,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 61e2dbdaceef741489e63d79f0ad11ec, type: 3}
@@ -5638,7 +5643,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1381990628
 GameObject:
@@ -5688,7 +5693,7 @@ Transform:
   - {fileID: 653207760}
   - {fileID: 777995243}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!60 &1381990631
 PolygonCollider2D:
@@ -5956,6 +5961,7 @@ MonoBehaviour:
   levelUI: {fileID: 228260599}
   characterAnimator: {fileID: 2007996344}
   player: {fileID: 8211716364374567226}
+  playAreaCollider: {fileID: 1381990631}
 --- !u!4 &1776221024
 Transform:
   m_ObjectHideFlags: 0
@@ -5968,7 +5974,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1856982854
 GameObject:
@@ -71108,6 +71114,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 702703105141683030, guid: c1c53998004b77e438522275a2bf0ace,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 702703105141683031, guid: c1c53998004b77e438522275a2bf0ace,
         type: 3}
       propertyPath: m_Name
@@ -71278,7 +71289,7 @@ PrefabInstance:
     - target: {fileID: 8211716364867214489, guid: 8910e718e89449e439d967f1d472bac2,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8211716364867214489, guid: 8910e718e89449e439d967f1d472bac2,
         type: 3}

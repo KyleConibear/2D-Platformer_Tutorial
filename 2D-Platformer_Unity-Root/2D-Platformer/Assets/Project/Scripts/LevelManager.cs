@@ -38,14 +38,22 @@ namespace KyleConibear
             }
         }
 
+        [SerializeField] private Animator characterAnimator = null;
+        [SerializeField] private Player player = null;
+
         private int time = 300;
-        private int gemCount = 0;        
+        private int gemCount = 0;
         private int cherryCount = 0;
+
+        public void SetPlayerActive()
+        {
+            this.player.gameObject.SetActive(true);
+        }
 
         public void IncreaseTime(int amount)
         {
             this.time += amount;
-        }        
+        }
         public void IncrementGemCount()
         {
             gemCount++;
@@ -59,15 +67,15 @@ namespace KyleConibear
             this.LevelUI.UpdateCherryCounter(cherryCount);
         }
 
-        private IEnumerator DecrementTime()
+        private IEnumerator DecrementTime(float delay = 0)
         {
             yield return new WaitForSeconds(1);
             this.time--;
-
-
+            LevelUI.UpdateTimeCounter(this.time);
+            StartCoroutine(DecrementTime());
         }
 
-        private void Awake()
+        private void Start()
         {
             if (On_LevelLoaded != null)
             {
@@ -77,11 +85,11 @@ namespace KyleConibear
             {
                 Logger.Log(this.isLogging, Type.Warning, $"On_LevelLoaded Action is null.");
             }
-        }
 
-        private void Start()
-        {
-            
+            this.characterAnimator.SetInteger("state", SceneManager.GetActiveScene().buildIndex);
+
+            //this.characterAnimator.Play("Player-LevelRunIn_Animation");
+            StartCoroutine(DecrementTime(3));
         }
     }
 }

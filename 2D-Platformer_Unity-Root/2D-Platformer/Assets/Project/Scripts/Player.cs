@@ -14,7 +14,7 @@ namespace KyleConibear
     /// <summary>
     /// Responsible for moving and animating the character entity.
     /// </summary>
-    public class Character : MonoBehaviour
+    public class Player : MonoBehaviour
     {
         public bool isLogging = false;
 

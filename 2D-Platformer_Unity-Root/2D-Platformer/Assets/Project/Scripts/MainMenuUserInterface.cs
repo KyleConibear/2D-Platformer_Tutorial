@@ -1,18 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace KyleConibear
 {
     public class MainMenuUserInterface : MonoBehaviour
     {
-        [SerializeField] private int loadSceneIndex = 1;
         [SerializeField] private Animator characterAnimator = null;
-        [SerializeField] private string characterRunStateName = "PlayerMainMenuRun_Animation";
         public void Play()
         {
-            this.characterAnimator.Play(this.characterRunStateName);
-            GameManager.LoadScene(this.loadSceneIndex);
+            int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+            GameManager.LoadScene(nextSceneIndex, false);
+            this.characterAnimator.SetInteger("state", SceneManager.GetActiveScene().buildIndex);
         }
 
         public void Quit()

@@ -9,41 +9,42 @@ namespace KyleConibear
     /// </summary>
     public static class GameManager
     {
-        private static State state = State.MainMenu;
-        public enum State
-        {
-            MainMenu = 0,
-            Gameplay = 1,
-            Paused = 2
-        }
-
-        private const string firstLoadedScene = "MainMenu";
-
         private static LevelManager _level = null;
         public static LevelManager level => _level;
 
+        private static AsyncOperation asyncLoadLevel;
 
-        public static void LoadScene(int sceneIndex)
+        public static void LoadScene(int sceneIndex, bool allowSceneActivation)
         {
-            AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync(sceneIndex);
+            asyncLoadLevel = SceneManager.LoadSceneAsync(sceneIndex);
+            SetSceneActivation(allowSceneActivation);
         }
 
-        /// <summary>
-        /// Automatically runs when the application starts
-        /// </summary>
+        public static void SetSceneActivation(bool allowSceneActivation)
+        {
+            asyncLoadLevel.allowSceneActivation = allowSceneActivation;
+        }
+
         [RuntimeInitializeOnLoadMethod]
-        private static void LoadScene()
+        private static void OnRuntimeMethodLoad()
         {
+            //SceneManager.LoadScene(0);
             LevelManager.On_LevelLoaded += SceneLoaded;
-            AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync(GameManager.firstLoadedScene);
+            Log(Type.Message, "Application Start.");
         }
+
+        //[RuntimeInitializeOnLoadMethod]
+        //static void OnSecondRuntimeMethodLoad()
+        //{
+        //    Debug.Log("SecondMethod After Scene is loaded and game is running.");
+        //}
 
         /// <summary>
         /// Invoked by the LevelManager in the scene once the scene has finished loading
         /// </summary>
         /// <param name="levelManager">The LevelManager in the active scene</param>
         /// <param name="playerManager">The PlayerManager in the active scene</param>
-        private static void SceneLoaded(string levelName, LevelManager levelManager)
+        public static void SceneLoaded(string levelName, LevelManager levelManager)
         {
             if (levelName != string.Empty || levelManager != null)
             {
@@ -62,5 +63,5 @@ namespace KyleConibear
             Logger.Log(Type.Message, "Application safely exited.");
             Application.Quit();
         }
-    } 
+    }
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 702703105141683028}
   - component: {fileID: 702703105141683029}
   - component: {fileID: 702703105141683030}
+  - component: {fileID: 1318810529}
   m_Layer: 0
   m_Name: Eagle
   m_TagString: Untagged
@@ -70,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1777805509
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 4124776857572312457, guid: 7b16b468da8795846b45631c70f647d5,
     type: 3}
@@ -115,3 +116,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 375420ae36508ea4b8d28a4948f53c04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bonusTime: 3
+  movementSpeed: 3
+  flyPositions:
+  - {x: 27.5, y: 0}
+  - {x: 27.5, y: -7}
+  delayBetweenPositions: 0
+--- !u!58 &1318810529
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702703105141683031}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.03125, y: 0.03125}
+  serializedVersion: 2
+  m_Radius: 1.25

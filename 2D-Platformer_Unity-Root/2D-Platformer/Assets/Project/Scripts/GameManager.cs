@@ -9,19 +9,33 @@ namespace KyleConibear
     /// </summary>
     public static class GameManager
     {
-        private const string levelName = "Level-1_Scene";
+        private static State state = State.MainMenu;
+        public enum State
+        {
+            MainMenu = 0,
+            Gameplay = 1,
+            Paused = 2
+        }
+
+        private const string firstLoadedScene = "MainMenu";
 
         private static LevelManager _level = null;
         public static LevelManager level => _level;
+
+
+        public static void LoadScene(int sceneIndex)
+        {
+            AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync(sceneIndex);
+        }
 
         /// <summary>
         /// Automatically runs when the application starts
         /// </summary>
         [RuntimeInitializeOnLoadMethod]
-        private static void LoadGameLevel()
+        private static void LoadScene()
         {
-            LevelManager.On_LevelLoaded += LevelLoaded;
-            AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync(levelName);
+            LevelManager.On_LevelLoaded += SceneLoaded;
+            AsyncOperation asyncLoadLevel = SceneManager.LoadSceneAsync(GameManager.firstLoadedScene);
         }
 
         /// <summary>
@@ -29,7 +43,7 @@ namespace KyleConibear
         /// </summary>
         /// <param name="levelManager">The LevelManager in the active scene</param>
         /// <param name="playerManager">The PlayerManager in the active scene</param>
-        private static void LevelLoaded(string levelName, LevelManager levelManager)
+        private static void SceneLoaded(string levelName, LevelManager levelManager)
         {
             if (levelName != string.Empty || levelManager != null)
             {

@@ -45,7 +45,7 @@ namespace KyleConibear
         public void IncreaseTime(int amount)
         {
             this.time += amount;
-        }
+        }        
         public void IncrementGemCount()
         {
             gemCount++;
@@ -59,6 +59,14 @@ namespace KyleConibear
             this.LevelUI.UpdateCherryCounter(cherryCount);
         }
 
+        private IEnumerator DecrementTime()
+        {
+            yield return new WaitForSeconds(1);
+            this.time--;
+
+
+        }
+
         private void Awake()
         {
             if (On_LevelLoaded != null)
@@ -69,6 +77,11 @@ namespace KyleConibear
             {
                 Logger.Log(this.isLogging, Type.Warning, $"On_LevelLoaded Action is null.");
             }
+        }
+
+        private void Start()
+        {
+            
         }
     }
 }
